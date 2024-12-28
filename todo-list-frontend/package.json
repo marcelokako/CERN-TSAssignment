@@ -1,6 +1,6 @@
 {
   "name": "todo-list",
-  "version": "0.0.0",
+  "version": "7.5.6",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --ssl --proxy-config proxy.config.json",
