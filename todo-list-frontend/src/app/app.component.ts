@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {Todo, TodoService} from "./todo.service";
-import {Observable} from "rxjs";
-import { finalize } from 'rxjs/operators';
+import {BehaviorSubject, Observable} from "rxjs";
+import { filter, finalize, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,7 @@ import { finalize } from 'rxjs/operators';
     </div>
     <div class="list">
       <label for="search">Search...</label>
-      <input id="search" type="text">
+      <input id="search" type="text" [(ngModel)]="searchInput" (change)="filterTodoList()">
       <app-progress-bar *ngIf="isLoading"></app-progress-bar>
       <app-todo-item *ngFor="let todo of todos$ | async" [item]="todo"></app-todo-item>
     </div>
@@ -23,12 +23,25 @@ import { finalize } from 'rxjs/operators';
 export class AppComponent {
 
   readonly todos$: Observable<Todo[]>;
-  isLoading: boolean = false
+  isLoading: boolean = true
+  searchInput: string = ""
+  private searchSubject: BehaviorSubject<string> = new BehaviorSubject<string>("");
 
   constructor(todoService: TodoService) {
-    this.isLoading = true;
-    this.todos$ = todoService.getAll().pipe(
-      finalize(()=>(this.isLoading = false))
-    );
+    this.todos$ = this.searchSubject.pipe(
+      switchMap(searchTerm => {
+        this.isLoading = true;
+        return todoService.getAll().pipe(
+          map(todos => todos.filter(
+            todo => todo.task.includes(searchTerm)
+          )),
+          finalize(()=>(this.isLoading = false))
+        );
+      })
+    )
+  }
+
+  filterTodoList() {
+    this.searchSubject.next(this.searchInput);
   }
 }
