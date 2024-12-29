@@ -9,6 +9,10 @@
 
 # dependencies
 /node_modules
+node_modules/
+
+# Gradle
+.gradle/
 
 # profiling files
 chrome-profiler-events*.json
