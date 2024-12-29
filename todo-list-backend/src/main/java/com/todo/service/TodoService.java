@@ -22,9 +22,8 @@ public class TodoService {
         todo.setId(id);
         return this.todoRepository.save(todo);
     }
-    public String remove(long id){
+    public void remove(long id){
         this.todoRepository.deleteById(id);
-        return "Todo removed successfully";
     }
     public List<Todo> findAll(){
         return this.todoRepository.findAll();

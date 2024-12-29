@@ -23,7 +23,7 @@ import {finalize, map, switchMap} from 'rxjs/operators';
         </app-todo-item>
         <app-progress-bar *ngIf="isProgressVisible(todo.id)"></app-progress-bar>
       </div>
-      
+      <h3 class="title" *ngIf="(todos$ | async)?.length == 0">None Found</h3>
     </div>
   `,
   styleUrls: ['app.component.scss']

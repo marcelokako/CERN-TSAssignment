@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/todo")
+@CrossOrigin(origins = "https://localhost:4200") // For testing
 public class TodoController {
 
     @Autowired
@@ -35,10 +37,13 @@ public class TodoController {
         }
     }
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> remove(@PathVariable long id){
+    public ResponseEntity<Map<String, String>> remove(@PathVariable long id){
         try {
-            String message = this.todoService.remove(id);
-            return new ResponseEntity<>(message, HttpStatus.OK);
+            this.todoService.remove(id);
+            return new ResponseEntity<>(
+                    Map.of("message", "Todo removed successfully"),
+                    HttpStatus.OK
+            );
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
